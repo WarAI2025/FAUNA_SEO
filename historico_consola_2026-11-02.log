@@ -14728,3 +14728,56 @@
 2026-11-02 18:27:16 | --- [W1] Ronda 618 (18:27:16) ---
 2026-11-02 18:27:26 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (18.0%) en [0.28,0.18]
 2026-11-02 18:27:29 | --- [W2] Ronda 2357 (18:27:29) ---
+2026-11-02 18:27:36 | --- [W1] Ronda 619 (18:27:36) ---
+2026-11-02 18:27:46 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (20.0%) en [0.28,0.18]
+2026-11-02 18:27:48 | --- [W2] Ronda 2358 (18:27:48) ---
+2026-11-02 18:27:55 | --- [W1] Ronda 620 (18:27:55) ---
+2026-11-02 18:28:03 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (24.5%) en [0.27,0.18]
+2026-11-02 18:28:05 | --- [W2] Ronda 2359 (18:28:05) ---
+2026-11-02 18:28:11 | --- [W1] Ronda 621 (18:28:11) ---
+2026-11-02 18:28:19 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (16.2%) en [0.28,0.18]
+2026-11-02 18:28:19 | --- [W2] Ronda 2360 (18:28:19) ---
+2026-11-02 18:28:27 | --- [W1] Ronda 622 (18:28:27) ---
+2026-11-02 18:28:33 | --- [W2] Ronda 2361 (18:28:33) ---
+2026-11-02 18:28:34 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (23.9%) en [0.28,0.18]
+2026-11-02 18:28:40 | --- [W1] Ronda 623 (18:28:40) ---
+2026-11-02 18:28:47 | --- [W2] Ronda 2362 (18:28:47) ---
+2026-11-02 18:28:47 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (24.0%) en [0.28,0.18]
+2026-11-02 18:28:53 |   [W2][Silueta Anómala] ⚠️ Tamaño fuera de rango en Cam_Cormorn (pajaro: w=0.014, h=0.0224). Forzando auditoría Gemini.
+2026-11-02 18:28:53 |   [W2][Silueta Anómala] ⚠️ Tamaño fuera de rango en Cam_Cormorn (pajaro: w=0.0229, h=0.0363). Forzando auditoría Gemini.
+2026-11-02 18:28:54 | --- [W1] Ronda 624 (18:28:54) ---
+2026-11-02 18:28:57 |   [W2][Gemini] ⚠️ gemini-3.1-flash-lite colapsado (503). Pausado 20s. Pasando al siguiente...
+2026-11-02 18:28:59 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (20.2%) en [0.28,0.18]
+2026-11-02 18:29:05 | --- [W1] Ronda 625 (18:29:05) ---
+2026-11-02 18:29:10 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (19.3%) en [0.27,0.18]
+2026-11-02 18:29:16 |   [W2][Gemini] Modelo exitoso: gemini-3.5-flash-lite
+2026-11-02 18:29:16 |   [W2][-] Falso positivo / Paloma descartado en Cam_Cormorn: sin animal claro
+2026-11-02 18:29:16 | --- [W1] Ronda 626 (18:29:16) ---
+2026-11-02 18:29:22 | --- [W2] Ronda 2363 (18:29:22) ---
+2026-11-02 18:29:22 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (19.9%) en [0.27,0.18]
+2026-11-02 18:29:29 | --- [W1] Ronda 627 (18:29:29) ---
+2026-11-02 18:29:35 | --- [W2] Ronda 2364 (18:29:35) ---
+2026-11-02 18:29:36 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (15.3%) en [0.28,0.18]
+2026-11-02 18:29:51 | --- [W1] Ronda 628 (18:29:51) ---
+2026-11-02 18:30:00 | --- [W2] Ronda 2365 (18:30:00) ---
+2026-11-02 18:30:02 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (14.6%) en [0.27,0.18]
+2026-11-02 18:30:11 |   [W2][Silueta Anómala] ⚠️ Tamaño fuera de rango en Cam_Cormorn (pajaro: w=0.0138, h=0.0242). Forzando auditoría Gemini.
+2026-11-02 18:30:11 |   [W2][Silueta Anómala] ⚠️ Tamaño fuera de rango en Cam_Cormorn (pajaro: w=0.0211, h=0.0343). Forzando auditoría Gemini.
+2026-11-02 18:30:11 |   [W2][Ahorro Tokens] 🛡️ Imagen repetitiva en Cam_Cormorn (Hamming=13, IoU=1.00). Gemini OMITIDO.
+2026-11-02 18:30:14 | --- [W1] Ronda 629 (18:30:14) ---
+2026-11-02 18:30:18 | --- [W2] Ronda 2366 (18:30:18) ---
+2026-11-02 18:30:22 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (19.5%) en [0.27,0.18]
+2026-11-02 18:30:30 | --- [W1] Ronda 630 (18:30:30) ---
+2026-11-02 18:30:34 | --- [W2] Ronda 2367 (18:30:34) ---
+2026-11-02 18:30:37 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (18.2%) en [0.27,0.18]
+2026-11-02 18:30:49 | --- [W1] Ronda 631 (18:30:49) ---
+2026-11-02 18:30:54 | --- [W2] Ronda 2368 (18:30:54) ---
+2026-11-02 18:31:00 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (14.6%) en [0.28,0.18]
+2026-11-02 18:31:10 | --- [W1] Ronda 632 (18:31:10) ---
+2026-11-02 18:31:12 | --- [W2] Ronda 2369 (18:31:12) ---
+2026-11-02 18:31:18 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (16.1%) en [0.27,0.18]
+2026-11-02 18:31:18 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.0%) en [0.17,0.25]
+2026-11-02 18:31:28 | --- [W1] Ronda 633 (18:31:28) ---
+2026-11-02 18:31:32 | --- [W2] Ronda 2370 (18:31:32) ---
+2026-11-02 18:31:36 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (14.4%) en [0.27,0.18]
+2026-11-02 18:31:48 | --- [W1] Ronda 634 (18:31:47) ---
