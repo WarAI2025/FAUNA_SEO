@@ -9869,3 +9869,8 @@ Fecha;Hora;Camara;Modelo_Gemini;Deteccion_YOLO
 2026-11-02;17:39:42;Cam_Cormorn;gemini-3.5-flash-lite;pajaro (12%)
 2026-11-02;17:44:59;Cam_Lechuzaext;gemini-3.5-flash-lite;pajaro (88%)
 2026-11-02;17:45:42;Cam_Lechuzaext;gemini-3.5-flash-lite;pajaro (84%)
+2026-11-02;18:12:49;Cam_Cormorn;gemini-3.5-flash-lite;pajaro (11%)
+2026-11-02;18:16:57;Cam_Cormorn;gemini-3.1-flash-lite;pajaro (11%)
+2026-11-02;18:20:00;Cam_Gaviota;gemini-3.5-flash-lite;pajaro (16%)
+2026-11-02;18:25:06;Carabo_Ext;gemini-3.1-flash-lite;oso (10%)
+2026-11-02;18:27:07;Carabo_Ext;gemini-3.1-flash-lite;Movimiento (Sin YOLO)
