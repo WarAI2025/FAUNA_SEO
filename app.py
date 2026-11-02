@@ -43,8 +43,19 @@ def cargar_datos():
     if 'Archivo_Imagen' not in df.columns:
         df['Archivo_Imagen'] = ""
     
+    # Normalizar formato de fecha a DD/MM/YYYY y ordenar de más actual a más antigua
     try:
-        df['Temp_Datetime'] = pd.to_datetime(df['Fecha'] + ' ' + df['Hora'], format='%d/%m/%Y %H:%M:%S', errors='coerce')
+        # Intentar parsear con pandas to_datetime soportando varios formatos (ISO o barra)
+        df['Temp_Datetime'] = pd.to_datetime(df['Fecha'] + ' ' + df['Hora'], errors='coerce')
+        # Si falló, intentar formato con guiones YYYY-MM-DD
+        mask_nat = df['Temp_Datetime'].isna()
+        if mask_nat.any():
+            df.loc[mask_nat, 'Temp_Datetime'] = pd.to_datetime(df.loc[mask_nat, 'Fecha'], format='%Y-%m-%d', errors='coerce')
+        
+        # Formatear la fecha estrictamente como DD/MM/YYYY
+        df['Fecha'] = df['Temp_Datetime'].dt.strftime('%d/%m/%Y').fillna(df['Fecha'])
+        
+        # Ordenar descendente (más actual a más antigua)
         df = df.sort_values(by='Temp_Datetime', ascending=False).drop(columns=['Temp_Datetime'])
     except Exception:
         df = df.iloc[::-1]
@@ -94,16 +105,17 @@ with col4:
 
 st.markdown("---")
 
-# --- GALERÍA VISUAL DE IMÁGENES SEGÚN SELECCIÓN ---
-st.subheader("📸 Galería de Fotogramas Coincidentes (Visualización Directa)")
-st.markdown("Las imágenes se muestran automáticamente a continuación según los filtros seleccionados (ordenadas de la más actual a la más antigua).")
+# --- GALERÍA VISUAL DE LAS ÚLTIMAS 10 IMÁGENES SEGÚN SELECCIÓN ---
+st.subheader("📸 Últimos 10 Fotogramas Coincidentes (Visualización Directa)")
+st.markdown("Mostrando automáticamente las 10 imágenes más recientes según la selección actual (ordenadas de la más actual a la más antigua).")
 
 if not df_filtrado.empty:
-    num_mostrar = min(len(df_filtrado), 30)
-    st.info(f"Mostrando los primeros {num_mostrar} fotogramas de un total de {len(df_filtrado)} registros coincidentes.")
+    # Tomar estrictamente las últimas 10 imágenes filtradas
+    df_ultimas_10 = df_filtrado.head(10)
+    st.info(f"Mostrando {len(df_ultimas_10)} imágenes (de un total de {len(df_filtrado)} registros coincidentes).")
     
     cols = st.columns(3)
-    for idx, (row_idx, row) in enumerate(df_filtrado.head(num_mostrar).iterrows()):
+    for idx, (row_idx, row) in enumerate(df_ultimas_10.iterrows()):
         img_name = row.get('Archivo_Imagen', '')
         camara = row.get('Camara', '')
         fecha = row.get('Fecha', '')
