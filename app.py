@@ -1,4 +1,3 @@
-
 import os
 import re
 import pandas as pd
@@ -96,16 +95,13 @@ st.subheader("📁 Visualizador y Enlaces Directos a Imágenes en Google Drive")
 st.markdown("Selecciona una línea de la tabla inferior para ver la información detallada y abrir o comprobar la imagen en Google Drive al instante.")
 
 if not df_filtrado.empty:
-    # Añadir columna de enlace a Google Drive
     df_display = df_filtrado.copy()
     df_display['Enlace Drive'] = df_display['Archivo_Imagen'].apply(
         lambda img: f"https://drive.google.com/drive/search?q={img}" if pd.notna(img) and img != "" else DRIVE_FOLDER_URL
     )
 
-    # Selector de registro para inspeccionar imagen y detalles
     opciones_indices = df_display.index.tolist()
     
-    # Tabla interactiva
     st.dataframe(
         df_display[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Enlace Drive']],
         use_container_width=True,
