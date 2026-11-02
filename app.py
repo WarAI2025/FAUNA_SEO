@@ -1,8 +1,6 @@
 import os
-import re
 import pandas as pd
 import streamlit as st
-import plotly.express as px
 
 st.set_page_config(
     page_title="BioTelemetry Pro - Monitor Etológico",
@@ -25,10 +23,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1vx29GXpcFN4iFDt8zwd1qGk18XXEKThG"
 ARCHIVO_CSV = "registro_detecciones.csv"
+# URL base oficial de tu repositorio en GitHub para renderizar las imágenes instantáneamente
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/WarAI2025/FAUNA_SEO/main/"
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=10)
 def cargar_datos():
     if not os.path.exists(ARCHIVO_CSV):
         return pd.DataFrame()
@@ -61,17 +60,15 @@ if df.empty:
     st.stop()
 
 st.title("🦅 BioTelemetry Fauna Pro — Suite Etológica")
-st.markdown("Análisis de conducta, microhábitats, posturas y censo de fauna ibérica en tiempo real.")
+st.markdown("Sincronización en tiempo real de registros, cámaras y fotogramas.")
 
-# --- PANEL LATERAL DE FILTROS EN CASCADA (Leave-One-Out) ---
+# --- FILTROS EN CASCADA ---
 st.sidebar.header("🎯 Panel de Filtros Relacionales")
 
-# Estado actual en session_state para manejar la cascada limpiamente
 if 'camara_sel' not in st.session_state: st.session_state.camara_sel = "Todas"
 if 'especie_sel' not in st.session_state: st.session_state.especie_sel = "Todas"
 if 'fecha_sel' not in st.session_state: st.session_state.fecha_sel = "Todas"
 
-# Función de ayuda para filtrar excluyendo un campo específico (cascada)
 def obtener_filtrado_excluyendo(campo_excluido):
     temp_df = df.copy()
     c_sel = st.session_state.get('camara_sel', 'Todas')
@@ -84,28 +81,23 @@ def obtener_filtrado_excluyendo(campo_excluido):
         temp_df = temp_df[temp_df['Especie'] == e_sel]
     if campo_excluido != 'fecha' and f_sel != "Todas":
         temp_df = temp_df[temp_df['Fecha'] == f_sel]
-        
     return temp_df
 
-# 1. Opciones de Cámara en cascada
 df_exc_camara = obtener_filtrado_excluyendo('camara')
 camaras_disp = ["Todas"] + sorted(df_exc_camara['Camara'].dropna().unique().tolist())
 if st.session_state.camara_sel not in camaras_disp: st.session_state.camara_sel = "Todas"
 camara_sel = st.sidebar.selectbox("Cámara / Estación", camaras_disp, key='camara_sel')
 
-# 2. Opciones de Especie en cascada
 df_exc_especie = obtener_filtrado_excluyendo('especie')
 especies_disp = ["Todas"] + sorted(df_exc_especie['Especie'].dropna().unique().tolist())
 if st.session_state.especie_sel not in especies_disp: st.session_state.especie_sel = "Todas"
 especie_sel = st.sidebar.selectbox("Especie Identificada", especies_disp, key='especie_sel')
 
-# 3. Opciones de Fecha en cascada
 df_exc_fecha = obtener_filtrado_excluyendo('fecha')
 fechas_disp = ["Todas"] + df_exc_fecha['Fecha'].dropna().unique().tolist()
 if st.session_state.fecha_sel not in fechas_disp: st.session_state.fecha_sel = "Todas"
 fecha_sel = st.sidebar.selectbox("Fecha de Detección", fechas_disp, key='fecha_sel')
 
-# Aplicar todos los filtros combinados definitivos
 df_filtrado = df.copy()
 if camara_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Camara'] == camara_sel]
@@ -114,7 +106,7 @@ if especie_sel != "Todas":
 if fecha_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Fecha'] == fecha_sel]
 
-# --- KPIS PRINCIPALES ---
+# --- KPIS ---
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown(f'<div class="kpi-card"><div class="kpi-label">Detecciones Filtradas</div><div class="kpi-value">{len(df_filtrado):,}</div></div>', unsafe_allow_html=True)
@@ -128,47 +120,34 @@ with col4:
 
 st.markdown("---")
 
-# --- INSPECTOR RÁPIDO DE FOTOGRAMAS ---
-st.subheader("📸 Inspector Directo de Fotogramas (Últimos 10 registros)")
-st.markdown("Selecciona cualquier registro de la lista desplegable para ver su información completa y abrir su búsqueda exacta en Google Drive al instante.")
+# --- GALERÍA VISUAL DIRECTA DE LAS ÚLTIMAS 10 IMÁGENES ---
+st.subheader("📸 Galería de Fotogramas en Directo (Últimas 10 Coincidencias)")
+st.markdown("Las imágenes se muestran automáticamente en pantalla al aplicar los filtros, sincronizadas al instante con el servidor.")
 
 if not df_filtrado.empty:
     df_ultimas_10 = df_filtrado.head(10).reset_index(drop=True)
+    st.info(f"Mostrando {len(df_ultimas_10)} fotogramas en pantalla (de un total de {len(df_filtrado)} registros filtrados).")
     
-    opciones_select = [
-        f"[{row['Fecha']} {row['Hora']}] - {row['Especie']} ({row['Camara']}) - Archivo: {row['Archivo_Imagen']}"
-        for _, row in df_ultimas_10.iterrows()
-    ]
-    
-    seleccion = st.selectbox("🎯 Elige un avistamiento para inspeccionar:", opciones_select)
-    
-    if seleccion:
-        idx_sel = opciones_select.index(seleccion)
-        row_sel = df_ultimas_10.iloc[idx_sel]
+    cols = st.columns(2)
+    for idx, (_, row) in enumerate(df_ultimas_10.iterrows()):
+        img_name = row.get('Archivo_Imagen', '')
+        camara = row.get('Camara', '')
+        fecha = row.get('Fecha', '')
+        hora = row.get('Hora', '')
+        especie = row.get('Especie', '')
+        deteccion = row.get('Detecciones', '')
         
-        img_name = row_sel.get('Archivo_Imagen', '')
-        drive_search = f"https://drive.google.com/drive/search?q={img_name}" if img_name else DRIVE_FOLDER_URL
+        # Construir la ruta URL directa al archivo de imagen en GitHub
+        img_url = f"{GITHUB_RAW_BASE}{img_name}" if img_name else ""
         
-        c_det1, c_det2 = st.columns([1, 1])
-        with c_det1:
-            st.markdown(f"### 📋 Detalles del Evento")
-            st.markdown(f"**Especie:** {row_sel.get('Especie', 'N/D')}")
-            st.markdown(f"**Cámara / Estación:** {row_sel.get('Camara', 'N/D')}")
-            st.markdown(f"**Fecha y Hora:** {row_sel.get('Fecha', '')} a las {row_sel.get('Hora', '')}")
-            st.markdown(f"**Detección Primaria (YOLO):** {row_sel.get('Detecciones', 'N/D')}")
-            st.markdown(f"**Archivo de Imagen:** `{img_name}`")
-            st.markdown(f"🔗 **[Abrir carpeta o buscar imagen en Google Drive]({drive_search})**")
-            
-        with c_det2:
-            st.markdown(f"### 🔍 Vista del Registro")
-            st.info(f"Para ver la fotografía en alta resolución con su cuadro delimitador (BBox), haz clic en el enlace de la izquierda para abrir el archivo exacto (`{img_name}`) directamente en tu Google Drive.")
-            
-    st.markdown("---")
-    st.subheader("📋 Tabla Resumen de Registros Coincidentes")
-    st.dataframe(
-        df_filtrado[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Archivo_Imagen']],
-        use_container_width=True,
-        hide_index=True
-    )
+        with cols[idx % 2]:
+            st.markdown(f"#### 🦅 {especie}")
+            st.caption(f"📍 Estación: **{camara}** | 📅 Fecha: **{fecha} {hora}** | 🔍 YOLO: `{deteccion}`")
+            if img_url:
+                try:
+                    st.image(img_url, use_container_width=True)
+                except Exception:
+                    st.warning(f"No se pudo cargar la imagen: `{img_name}` (comprueba que esté sincronizada en GitHub).")
+            st.markdown("---")
 else:
     st.warning("No hay registros que coincidan con la combinación de filtros seleccionada.")
