@@ -27,6 +27,7 @@ st.markdown("""
 
 DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1vx29GXpcFN4iFDt8zwd1qGk18XXEKThG"
 ARCHIVO_CSV = "registro_detecciones.csv"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/WarAI2025/FAUNA_SEO/main/animales_detectados/"
 
 @st.cache_data(ttl=60)
 def cargar_datos():
@@ -41,6 +42,13 @@ def cargar_datos():
         df['Fecha'] = ""
     if 'Archivo_Imagen' not in df.columns:
         df['Archivo_Imagen'] = ""
+    
+    try:
+        df['Temp_Datetime'] = pd.to_datetime(df['Fecha'] + ' ' + df['Hora'], format='%d/%m/%Y %H:%M:%S', errors='coerce')
+        df = df.sort_values(by='Temp_Datetime', ascending=False).drop(columns=['Temp_Datetime'])
+    except Exception:
+        df = df.iloc[::-1]
+        
     return df
 
 df = cargar_datos()
@@ -55,19 +63,15 @@ st.markdown("Análisis de conducta, microhábitats, posturas y censo de fauna ib
 # --- PANEL LATERAL DE FILTROS ---
 st.sidebar.header("🎯 Panel de Filtros Relacionales")
 
-# 1. Cámara
 camaras = ["Todas"] + sorted(df['Camara'].dropna().unique().tolist())
 camara_sel = st.sidebar.selectbox("Cámara / Estación", camaras)
 
-# 2. Especie
 especies = ["Todas"] + sorted(df['Especie'].dropna().unique().tolist())
 especie_sel = st.sidebar.selectbox("Especie Identificada", especies)
 
-# 3. Fecha (Sustituyendo Dimorfismo y Marcaje)
-fechas = ["Todas"] + sorted(df['Fecha'].dropna().unique().tolist())
+fechas = ["Todas"] + df['Fecha'].dropna().unique().tolist()
 fecha_sel = st.sidebar.selectbox("Fecha de Detección", fechas)
 
-# Filtrado
 df_filtrado = df.copy()
 if camara_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Camara'] == camara_sel]
@@ -90,39 +94,34 @@ with col4:
 
 st.markdown("---")
 
-# --- VISUALIZADOR Y ENLACES DIRECTOS A IMÁGENES ---
-st.subheader("📁 Visualizador y Enlaces Directos a Imágenes en Google Drive")
-st.markdown("Selecciona una línea de la tabla inferior para ver la información detallada y abrir o comprobar la imagen en Google Drive al instante.")
+# --- GALERÍA VISUAL DE IMÁGENES SEGÚN SELECCIÓN ---
+st.subheader("📸 Galería de Fotogramas Coincidentes (Visualización Directa)")
+st.markdown("Las imágenes se muestran automáticamente a continuación según los filtros seleccionados (ordenadas de la más actual a la más antigua).")
 
 if not df_filtrado.empty:
-    df_display = df_filtrado.copy()
-    df_display['Enlace Drive'] = df_display['Archivo_Imagen'].apply(
-        lambda img: f"https://drive.google.com/drive/search?q={img}" if pd.notna(img) and img != "" else DRIVE_FOLDER_URL
-    )
-
-    opciones_indices = df_display.index.tolist()
+    num_mostrar = min(len(df_filtrado), 30)
+    st.info(f"Mostrando los primeros {num_mostrar} fotogramas de un total de {len(df_filtrado)} registros coincidentes.")
     
-    st.dataframe(
-        df_display[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Enlace Drive']],
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.markdown("### 🔍 Inspección Rápida del Fotograma Seleccionado")
-    idx_seleccionado = st.selectbox("Elige un registro de la lista (por su número de índice):", opciones_indices)
-    
-    if idx_seleccionado is not None:
-        row_sel = df_display.loc[idx_seleccionado]
-        col_i1, col_i2 = st.columns([1, 2])
-        with col_i1:
-            st.markdown(f"**Cámara:** {row_sel['Camara']}")
-            st.markdown(f"**Fecha y Hora:** {row_sel['Fecha']} - {row_sel['Hora']}")
-            st.markdown(f"**Especie:** {row_sel['Especie']}")
-            st.markdown(f"**Descripción:** {row_sel.get('Descripcion_Detallada', 'Sin descripción')}")
-            img_name = row_sel['Archivo_Imagen']
-            link_Drive = f"https://drive.google.com/drive/search?q={img_name}" if img_name else DRIVE_FOLDER_URL
-            st.markdown(f"🔗 [Abrir imagen exacta en Google Drive]({link_Drive})", unsafe_allow_html=True)
-        with col_i2:
-            st.info(f"📸 Archivo de imagen asociado: `{img_name}`. Haz clic en el enlace de la izquierda para buscar y comprobar el fotograma directamente en tu carpeta compartida de Google Drive.")
+    cols = st.columns(3)
+    for idx, (row_idx, row) in enumerate(df_filtrado.head(num_mostrar).iterrows()):
+        img_name = row.get('Archivo_Imagen', '')
+        camara = row.get('Camara', '')
+        fecha = row.get('Fecha', '')
+        hora = row.get('Hora', '')
+        especie = row.get('Especie', '')
+        
+        img_url = GITHUB_RAW_BASE + img_name if img_name else ""
+        drive_search = f"https://drive.google.com/drive/search?q={img_name}" if img_name else DRIVE_FOLDER_URL
+        
+        with cols[idx % 3]:
+            st.markdown(f"**{especie}**")
+            st.caption(f"📍 {camara} | 📅 {fecha} {hora}")
+            if img_url:
+                try:
+                    st.image(img_url, use_container_width=True)
+                except Exception:
+                    st.warning("No se pudo cargar la miniatura.")
+            st.markdown(f"[🔗 Buscar en Google Drive]({drive_search})")
+            st.markdown("---")
 else:
     st.warning("No hay registros que coincidan con los filtros seleccionados.")
