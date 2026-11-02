@@ -1,17 +1,16 @@
+
 import os
 import re
 import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-# Configuración de la página
 st.set_page_config(
     page_title="BioTelemetry Pro - Monitor Etológico",
     page_icon="🦅",
     layout="wide"
 )
 
-# Estilos CSS personalizados para un diseño profesional oscuro
 st.markdown("""
     <style>
     .main { background-color: #070b12; color: #f8fafc; }
@@ -27,7 +26,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# URL base de tu carpeta de Google Drive para los enlaces de imágenes
 DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1vx29GXpcFN4iFDt8zwd1qGk18XXEKThG"
 ARCHIVO_CSV = "registro_detecciones.csv"
 
@@ -35,64 +33,52 @@ ARCHIVO_CSV = "registro_detecciones.csv"
 def cargar_datos():
     if not os.path.exists(ARCHIVO_CSV):
         return pd.DataFrame()
-    
     df = pd.read_csv(ARCHIVO_CSV, sep=";")
-    # Normalización básica de columnas
     if 'Especie' not in df.columns and 'Especie_Gemini' in df.columns:
         df['Especie'] = df['Especie_Gemini']
     if 'Camara' not in df.columns:
         df['Camara'] = "Desconocida"
-    if 'Sexo' not in df.columns:
-        df['Sexo'] = "Sin identificar"
-    if 'Anilla' not in df.columns:
-        df['Anilla'] = "Sin anilla"
+    if 'Fecha' not in df.columns:
+        df['Fecha'] = ""
     if 'Archivo_Imagen' not in df.columns:
         df['Archivo_Imagen'] = ""
-    
     return df
 
 df = cargar_datos()
 
 if df.empty:
-    st.warning("⚠️ No se encontró el archivo `registro_detecciones.csv` o está vacío. Sube tu archivo CSV al repositorio de GitHub.")
+    st.warning("⚠️ No se encontró el archivo `registro_detecciones.csv` o está vacío.")
     st.stop()
 
-# --- HEADER ---
 st.title("🦅 BioTelemetry Fauna Pro — Suite Etológica")
 st.markdown("Análisis de conducta, microhábitats, posturas y censo de fauna ibérica en tiempo real.")
 
 # --- PANEL LATERAL DE FILTROS ---
 st.sidebar.header("🎯 Panel de Filtros Relacionales")
 
-# 1. Filtro de Cámara
+# 1. Cámara
 camaras = ["Todas"] + sorted(df['Camara'].dropna().unique().tolist())
 camara_sel = st.sidebar.selectbox("Cámara / Estación", camaras)
 
-# 2. Filtro de Especie
+# 2. Especie
 especies = ["Todas"] + sorted(df['Especie'].dropna().unique().tolist())
 especie_sel = st.sidebar.selectbox("Especie Identificada", especies)
 
-# 3. Filtro de Sexo
-sexos = ["Todos"] + sorted(df['Sexo'].dropna().unique().tolist())
-sexo_sel = st.sidebar.selectbox("Dimorfismo / Sexo", sexos)
+# 3. Fecha (Sustituyendo Dimorfismo y Marcaje)
+fechas = ["Todas"] + sorted(df['Fecha'].dropna().unique().tolist())
+fecha_sel = st.sidebar.selectbox("Fecha de Detección", fechas)
 
-# 4. Filtro de Anilla
-anillas = ["Todos"] + sorted(df['Anilla'].dropna().unique().tolist())
-anilla_sel = st.sidebar.selectbox("Marcaje / Anilla", anillas)
-
-# Filtrado del DataFrame
+# Filtrado
 df_filtrado = df.copy()
 if camara_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Camara'] == camara_sel]
 if especie_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Especie'] == especie_sel]
-if sexo_sel != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['Sexo'] == sexo_sel]
-if anilla_sel != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['Anilla'] == anilla_sel]
+if fecha_sel != "Todas":
+    df_filtrado = df_filtrado[df_filtrado['Fecha'] == fecha_sel]
 
 # --- KPIS PRINCIPALES ---
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown(f'<div class="kpi-card"><div class="kpi-label">Detecciones Filtradas</div><div class="kpi-value">{len(df_filtrado):,}</div></div>', unsafe_allow_html=True)
 with col2:
@@ -100,62 +86,47 @@ with col2:
 with col3:
     st.markdown(f'<div class="kpi-card"><div class="kpi-label">Cámaras Activas</div><div class="kpi-value">{df_filtrado["Camara"].nunique()}</div></div>', unsafe_allow_html=True)
 with col4:
-    anilladas = len(df_filtrado[df_filtrado['Anilla'].str.lower() != 'sin anilla']) if 'Anilla' in df_filtrado else 0
-    st.markdown(f'<div class="kpi-card"><div class="kpi-label">Ejemplares Anillados</div><div class="kpi-value">{anilladas}</div></div>', unsafe_allow_html=True)
-with col5:
     pct = (len(df_filtrado) / len(df)) * 100 if len(df) > 0 else 0
     st.markdown(f'<div class="kpi-card"><div class="kpi-label">% del Histórico</div><div class="kpi-value">{pct:.1f}%</div></div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
-# --- GRÁFICOS ANALÍTICOS ---
-c1, c2 = st.columns(2)
-
-with c1:
-    st.subheader("📊 Especies Coincidentes")
-    if not df_filtrado.empty:
-        fig_esp = px.bar(
-            df_filtrado['Especie'].value_counts().reset_index().head(10),
-            x='count', y='Especie', orientation='h',
-            color='count', color_continuous_scale='greens',
-            labels={'count': 'Número de Detecciones', 'Especie': 'Especie'}
-        )
-        fig_esp.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white', margin=dict(l=0, r=0, t=10, b=10))
-        st.plotly_chart(fig_esp, use_container_width=True)
-    else:
-        st.info("No hay datos para mostrar con los filtros actual.")
-
-with c2:
-    st.subheader("📷 Actividad por Estación / Cámara")
-    if not df_filtrado.empty:
-        fig_cam = px.pie(
-            df_filtrado, names='Camara', hole=0.4,
-            color_discrete_sequence=px.colors.sequential.Tealgrn
-        )
-        fig_cam.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white', margin=dict(l=0, r=0, t=10, b=10))
-        st.plotly_chart(fig_cam, use_container_width=True)
-    else:
-        st.info("No hay datos para mostrar.")
-
-st.markdown("---")
-
-# --- TABLA DINÁMICA DE ACCESO A GOOGLE DRIVE ---
-st.subheader("📁 Enlaces Directos a Imágenes en Google Drive")
-st.markdown("Selecciona una detección para abrir directamente la búsqueda de la imagen en tu carpeta compartida de Google Drive.")
+# --- VISUALIZADOR Y ENLACES DIRECTOS A IMÁGENES ---
+st.subheader("📁 Visualizador y Enlaces Directos a Imágenes en Google Drive")
+st.markdown("Selecciona una línea de la tabla inferior para ver la información detallada y abrir o comprobar la imagen en Google Drive al instante.")
 
 if not df_filtrado.empty:
-    # Preparar tabla para mostrar
-    tabla_mostrar = df_filtrado[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Archivo_Imagen']].copy()
-    
-    # Generar enlace de búsqueda directa en Google Drive por nombre de archivo
-    tabla_mostrar['Enlace Drive'] = tabla_mostrar['Archivo_Imagen'].apply(
+    # Añadir columna de enlace a Google Drive
+    df_display = df_filtrado.copy()
+    df_display['Enlace Drive'] = df_display['Archivo_Imagen'].apply(
         lambda img: f"https://drive.google.com/drive/search?q={img}" if pd.notna(img) and img != "" else DRIVE_FOLDER_URL
     )
+
+    # Selector de registro para inspeccionar imagen y detalles
+    opciones_indices = df_display.index.tolist()
     
+    # Tabla interactiva
     st.dataframe(
-        tabla_mostrar[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Enlace Drive']],
+        df_display[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Enlace Drive']],
         use_container_width=True,
         hide_index=True
     )
+
+    st.markdown("### 🔍 Inspección Rápida del Fotograma Seleccionado")
+    idx_seleccionado = st.selectbox("Elige un registro de la lista (por su número de índice):", opciones_indices)
+    
+    if idx_seleccionado is not None:
+        row_sel = df_display.loc[idx_seleccionado]
+        col_i1, col_i2 = st.columns([1, 2])
+        with col_i1:
+            st.markdown(f"**Cámara:** {row_sel['Camara']}")
+            st.markdown(f"**Fecha y Hora:** {row_sel['Fecha']} - {row_sel['Hora']}")
+            st.markdown(f"**Especie:** {row_sel['Especie']}")
+            st.markdown(f"**Descripción:** {row_sel.get('Descripcion_Detallada', 'Sin descripción')}")
+            img_name = row_sel['Archivo_Imagen']
+            link_Drive = f"https://drive.google.com/drive/search?q={img_name}" if img_name else DRIVE_FOLDER_URL
+            st.markdown(f"🔗 [Abrir imagen exacta en Google Drive]({link_Drive})", unsafe_allow_html=True)
+        with col_i2:
+            st.info(f"📸 Archivo de imagen asociado: `{img_name}`. Haz clic en el enlace de la izquierda para buscar y comprobar el fotograma directamente en tu carpeta compartida de Google Drive.")
 else:
     st.warning("No hay registros que coincidan con los filtros seleccionados.")
