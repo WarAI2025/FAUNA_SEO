@@ -63,18 +63,49 @@ if df.empty:
 st.title("🦅 BioTelemetry Fauna Pro — Suite Etológica")
 st.markdown("Análisis de conducta, microhábitats, posturas y censo de fauna ibérica en tiempo real.")
 
-# --- PANEL LATERAL DE FILTROS ---
+# --- PANEL LATERAL DE FILTROS EN CASCADA (Leave-One-Out) ---
 st.sidebar.header("🎯 Panel de Filtros Relacionales")
 
-camaras = ["Todas"] + sorted(df['Camara'].dropna().unique().tolist())
-camara_sel = st.sidebar.selectbox("Cámara / Estación", camaras)
+# Estado actual en session_state para manejar la cascada limpiamente
+if 'camara_sel' not in st.session_state: st.session_state.camara_sel = "Todas"
+if 'especie_sel' not in st.session_state: st.session_state.especie_sel = "Todas"
+if 'fecha_sel' not in st.session_state: st.session_state.fecha_sel = "Todas"
 
-especies = ["Todas"] + sorted(df['Especie'].dropna().unique().tolist())
-especie_sel = st.sidebar.selectbox("Especie Identificada", especies)
+# Función de ayuda para filtrar excluyendo un campo específico (cascada)
+def obtener_filtrado_excluyendo(campo_excluido):
+    temp_df = df.copy()
+    c_sel = st.session_state.get('camara_sel', 'Todas')
+    e_sel = st.session_state.get('especie_sel', 'Todas')
+    f_sel = st.session_state.get('fecha_sel', 'Todas')
+    
+    if campo_excluido != 'camara' and c_sel != "Todas":
+        temp_df = temp_df[temp_df['Camara'] == c_sel]
+    if campo_excluido != 'especie' and e_sel != "Todas":
+        temp_df = temp_df[temp_df['Especie'] == e_sel]
+    if campo_excluido != 'fecha' and f_sel != "Todas":
+        temp_df = temp_df[temp_df['Fecha'] == f_sel]
+        
+    return temp_df
 
-fechas = ["Todas"] + df['Fecha'].dropna().unique().tolist()
-fecha_sel = st.sidebar.selectbox("Fecha de Detección", fechas)
+# 1. Opciones de Cámara en cascada
+df_exc_camara = obtener_filtrado_excluyendo('camara')
+camaras_disp = ["Todas"] + sorted(df_exc_camara['Camara'].dropna().unique().tolist())
+if st.session_state.camara_sel not in camaras_disp: st.session_state.camara_sel = "Todas"
+camara_sel = st.sidebar.selectbox("Cámara / Estación", camaras_disp, key='camara_sel')
 
+# 2. Opciones de Especie en cascada
+df_exc_especie = obtener_filtrado_excluyendo('especie')
+especies_disp = ["Todas"] + sorted(df_exc_especie['Especie'].dropna().unique().tolist())
+if st.session_state.especie_sel not in especies_disp: st.session_state.especie_sel = "Todas"
+especie_sel = st.sidebar.selectbox("Especie Identificada", especies_disp, key='especie_sel')
+
+# 3. Opciones de Fecha en cascada
+df_exc_fecha = obtener_filtrado_excluyendo('fecha')
+fechas_disp = ["Todas"] + df_exc_fecha['Fecha'].dropna().unique().tolist()
+if st.session_state.fecha_sel not in fechas_disp: st.session_state.fecha_sel = "Todas"
+fecha_sel = st.sidebar.selectbox("Fecha de Detección", fechas_disp, key='fecha_sel')
+
+# Aplicar todos los filtros combinados definitivos
 df_filtrado = df.copy()
 if camara_sel != "Todas":
     df_filtrado = df_filtrado[df_filtrado['Camara'] == camara_sel]
@@ -104,7 +135,6 @@ st.markdown("Selecciona cualquier registro de la lista desplegable para ver su i
 if not df_filtrado.empty:
     df_ultimas_10 = df_filtrado.head(10).reset_index(drop=True)
     
-    # Crear opciones descriptivas para el selectbox
     opciones_select = [
         f"[{row['Fecha']} {row['Hora']}] - {row['Especie']} ({row['Camara']}) - Archivo: {row['Archivo_Imagen']}"
         for _, row in df_ultimas_10.iterrows()
@@ -113,7 +143,6 @@ if not df_filtrado.empty:
     seleccion = st.selectbox("🎯 Elige un avistamiento para inspeccionar:", opciones_select)
     
     if seleccion:
-        # Encontrar el índice seleccionado
         idx_sel = opciones_select.index(seleccion)
         row_sel = df_ultimas_10.iloc[idx_sel]
         
@@ -142,4 +171,4 @@ if not df_filtrado.empty:
         hide_index=True
     )
 else:
-    st.warning("No hay registros que coincidan con los filtros seleccionados.")
+    st.warning("No hay registros que coincidan con la combinación de filtros seleccionada.")
