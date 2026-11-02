@@ -27,7 +27,6 @@ st.markdown("""
 
 DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1vx29GXpcFN4iFDt8zwd1qGk18XXEKThG"
 ARCHIVO_CSV = "registro_detecciones.csv"
-GITHUB_RAW_BASE = "https://raw.githubusercontent.com/WarAI2025/FAUNA_SEO/main/animales_detectados/"
 
 @st.cache_data(ttl=60)
 def cargar_datos():
@@ -43,19 +42,12 @@ def cargar_datos():
     if 'Archivo_Imagen' not in df.columns:
         df['Archivo_Imagen'] = ""
     
-    # Normalizar formato de fecha a DD/MM/YYYY y ordenar de más actual a más antigua
     try:
-        # Intentar parsear con pandas to_datetime soportando varios formatos (ISO o barra)
         df['Temp_Datetime'] = pd.to_datetime(df['Fecha'] + ' ' + df['Hora'], errors='coerce')
-        # Si falló, intentar formato con guiones YYYY-MM-DD
         mask_nat = df['Temp_Datetime'].isna()
         if mask_nat.any():
             df.loc[mask_nat, 'Temp_Datetime'] = pd.to_datetime(df.loc[mask_nat, 'Fecha'], format='%Y-%m-%d', errors='coerce')
-        
-        # Formatear la fecha estrictamente como DD/MM/YYYY
         df['Fecha'] = df['Temp_Datetime'].dt.strftime('%d/%m/%Y').fillna(df['Fecha'])
-        
-        # Ordenar descendente (más actual a más antigua)
         df = df.sort_values(by='Temp_Datetime', ascending=False).drop(columns=['Temp_Datetime'])
     except Exception:
         df = df.iloc[::-1]
@@ -105,35 +97,49 @@ with col4:
 
 st.markdown("---")
 
-# --- GALERÍA VISUAL DE LAS ÚLTIMAS 10 IMÁGENES SEGÚN SELECCIÓN ---
-st.subheader("📸 Últimos 10 Fotogramas Coincidentes (Visualización Directa)")
-st.markdown("Mostrando automáticamente las 10 imágenes más recientes según la selección actual (ordenadas de la más actual a la más antigua).")
+# --- INSPECTOR RÁPIDO DE FOTOGRAMAS ---
+st.subheader("📸 Inspector Directo de Fotogramas (Últimos 10 registros)")
+st.markdown("Selecciona cualquier registro de la lista desplegable para ver su información completa y abrir su búsqueda exacta en Google Drive al instante.")
 
 if not df_filtrado.empty:
-    # Tomar estrictamente las últimas 10 imágenes filtradas
-    df_ultimas_10 = df_filtrado.head(10)
-    st.info(f"Mostrando {len(df_ultimas_10)} imágenes (de un total de {len(df_filtrado)} registros coincidentes).")
+    df_ultimas_10 = df_filtrado.head(10).reset_index(drop=True)
     
-    cols = st.columns(3)
-    for idx, (row_idx, row) in enumerate(df_ultimas_10.iterrows()):
-        img_name = row.get('Archivo_Imagen', '')
-        camara = row.get('Camara', '')
-        fecha = row.get('Fecha', '')
-        hora = row.get('Hora', '')
-        especie = row.get('Especie', '')
+    # Crear opciones descriptivas para el selectbox
+    opciones_select = [
+        f"[{row['Fecha']} {row['Hora']}] - {row['Especie']} ({row['Camara']}) - Archivo: {row['Archivo_Imagen']}"
+        for _, row in df_ultimas_10.iterrows()
+    ]
+    
+    seleccion = st.selectbox("🎯 Elige un avistamiento para inspeccionar:", opciones_select)
+    
+    if seleccion:
+        # Encontrar el índice seleccionado
+        idx_sel = opciones_select.index(seleccion)
+        row_sel = df_ultimas_10.iloc[idx_sel]
         
-        img_url = GITHUB_RAW_BASE + img_name if img_name else ""
+        img_name = row_sel.get('Archivo_Imagen', '')
         drive_search = f"https://drive.google.com/drive/search?q={img_name}" if img_name else DRIVE_FOLDER_URL
         
-        with cols[idx % 3]:
-            st.markdown(f"**{especie}**")
-            st.caption(f"📍 {camara} | 📅 {fecha} {hora}")
-            if img_url:
-                try:
-                    st.image(img_url, use_container_width=True)
-                except Exception:
-                    st.warning("No se pudo cargar la miniatura.")
-            st.markdown(f"[🔗 Buscar en Google Drive]({drive_search})")
-            st.markdown("---")
+        c_det1, c_det2 = st.columns([1, 1])
+        with c_det1:
+            st.markdown(f"### 📋 Detalles del Evento")
+            st.markdown(f"**Especie:** {row_sel.get('Especie', 'N/D')}")
+            st.markdown(f"**Cámara / Estación:** {row_sel.get('Camara', 'N/D')}")
+            st.markdown(f"**Fecha y Hora:** {row_sel.get('Fecha', '')} a las {row_sel.get('Hora', '')}")
+            st.markdown(f"**Detección Primaria (YOLO):** {row_sel.get('Detecciones', 'N/D')}")
+            st.markdown(f"**Archivo de Imagen:** `{img_name}`")
+            st.markdown(f"🔗 **[Abrir carpeta o buscar imagen en Google Drive]({drive_search})**")
+            
+        with c_det2:
+            st.markdown(f"### 🔍 Vista del Registro")
+            st.info(f"Para ver la fotografía en alta resolución con su cuadro delimitador (BBox), haz clic en el enlace de la izquierda para abrir el archivo exacto (`{img_name}`) directamente en tu Google Drive.")
+            
+    st.markdown("---")
+    st.subheader("📋 Tabla Resumen de Registros Coincidentes")
+    st.dataframe(
+        df_filtrado[['Fecha', 'Hora', 'Camara', 'Especie', 'Detecciones', 'Archivo_Imagen']],
+        use_container_width=True,
+        hide_index=True
+    )
 else:
     st.warning("No hay registros que coincidan con los filtros seleccionados.")
