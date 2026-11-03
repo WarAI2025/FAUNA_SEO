@@ -7756,3 +7756,64 @@
 2026-11-03 06:52:58 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.1%) en [0.28,0.18]
 2026-11-03 06:52:58 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.4%) en [0.17,0.25]
 2026-11-03 06:52:58 | --- [W2] Ronda 236 (06:52:58) ---
+2026-11-03 06:53:05 | --- [W1] Ronda 239 (06:53:05) ---
+2026-11-03 06:53:14 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.5%) en [0.17,0.25]
+2026-11-03 06:53:14 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.2%) en [0.27,0.19]
+2026-11-03 06:53:14 | --- [W2] Ronda 237 (06:53:14) ---
+2026-11-03 06:53:24 | --- [W1] Ronda 240 (06:53:24) ---
+2026-11-03 06:53:31 | --- [W2] Ronda 238 (06:53:31) ---
+2026-11-03 06:53:31 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (11.7%) en [0.17,0.25]
+2026-11-03 06:53:31 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.4%) en [0.27,0.18]
+2026-11-03 06:53:39 | --- [W1] Ronda 241 (06:53:39) ---
+2026-11-03 06:53:46 | --- [W2] Ronda 239 (06:53:46) ---
+2026-11-03 06:53:47 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.8%) en [0.27,0.18]
+2026-11-03 06:53:47 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.0%) en [0.17,0.25]
+2026-11-03 06:53:53 | --- [W1] Ronda 242 (06:53:53) ---
+2026-11-03 06:53:58 | --- [W2] Ronda 240 (06:53:58) ---
+2026-11-03 06:54:01 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.5%) en [0.28,0.18]
+2026-11-03 06:54:01 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (8.5%) en [0.16,0.25]
+2026-11-03 06:54:12 | --- [W1] Ronda 243 (06:54:12) ---
+2026-11-03 06:54:16 | --- [W2] Ronda 241 (06:54:16) ---
+2026-11-03 06:54:18 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (11.3%) en [0.17,0.25]
+2026-11-03 06:54:18 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.6%) en [0.27,0.18]
+2026-11-03 06:54:30 | --- [W1] Ronda 244 (06:54:30) ---
+2026-11-03 06:54:36 | --- [W2] Ronda 242 (06:54:36) ---
+2026-11-03 06:54:37 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.3%) en [0.17,0.25]
+2026-11-03 06:54:37 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (8.5%) en [0.28,0.18]
+2026-11-03 06:54:46 | --- [W1] Ronda 245 (06:54:45) ---
+2026-11-03 06:54:53 | --- [W2] Ronda 243 (06:54:53) ---
+2026-11-03 06:54:55 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.5%) en [0.27,0.18]
+2026-11-03 06:54:55 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.0%) en [0.17,0.25]
+2026-11-03 06:55:01 | --- [W1] Ronda 246 (06:55:01) ---
+2026-11-03 06:55:07 | --- [W2] Ronda 244 (06:55:07) ---
+2026-11-03 06:55:09 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.9%) en [0.17,0.25]
+2026-11-03 06:55:09 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.2%) en [0.27,0.18]
+2026-11-03 06:55:15 | --- [W1] Ronda 247 (06:55:15) ---
+2026-11-03 06:55:20 | --- [W2] Ronda 245 (06:55:20) ---
+2026-11-03 06:55:21 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.6%) en [0.27,0.18]
+2026-11-03 06:55:21 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (8.3%) en [0.17,0.25]
+2026-11-03 06:55:27 | --- [W1] Ronda 248 (06:55:27) ---
+2026-11-03 06:55:32 | --- [W2] Ronda 246 (06:55:32) ---
+2026-11-03 06:55:32 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (13.4%) en [0.17,0.25]
+2026-11-03 06:55:32 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (12.2%) en [0.28,0.18]
+2026-11-03 06:55:32 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.0%) en [0.29,0.17]
+2026-11-03 06:55:39 | --- [W1] Ronda 249 (06:55:39) ---
+2026-11-03 06:55:45 | --- [W2] Ronda 247 (06:55:45) ---
+2026-11-03 06:55:46 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (10.4%) en [0.27,0.18]
+2026-11-03 06:55:46 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.8%) en [0.17,0.25]
+2026-11-03 06:55:53 | --- [W1] Ronda 250 (06:55:53) ---
+2026-11-03 06:55:58 | --- [W2] Ronda 248 (06:55:58) ---
+2026-11-03 06:56:00 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.5%) en [0.28,0.18]
+2026-11-03 06:56:00 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.2%) en [0.17,0.25]
+2026-11-03 06:56:08 | --- [W1] Ronda 251 (06:56:08) ---
+2026-11-03 06:56:13 | --- [W2] Ronda 249 (06:56:13) ---
+2026-11-03 06:56:17 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (12.2%) en [0.28,0.18]
+2026-11-03 06:56:17 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.7%) en [0.17,0.25]
+2026-11-03 06:56:24 | --- [W1] Ronda 252 (06:56:24) ---
+2026-11-03 06:56:30 | --- [W2] Ronda 250 (06:56:30) ---
+2026-11-03 06:56:32 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.0%) en [0.28,0.18]
+2026-11-03 06:56:32 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (8.5%) en [0.17,0.25]
+2026-11-03 06:56:38 | --- [W1] Ronda 253 (06:56:38) ---
+2026-11-03 06:56:42 | --- [W2] Ronda 251 (06:56:42) ---
+2026-11-03 06:56:44 |   [W1][Filtro] 🚫 Ignorado falso positivo en Cam_BUHODESPEN: jirafa (9.1%) en [0.16,0.25]
+2026-11-03 06:56:51 | --- [W1] Ronda 254 (06:56:51) ---
