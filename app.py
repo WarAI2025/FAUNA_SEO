@@ -20,9 +20,13 @@ CSV_REGISTRO = 'registro_detecciones.csv'
 @st.cache_data(ttl=60)
 def cargar_datos(path):
   if os.path.exists(path):
-    df = pd.read_csv(path)
-    # Intentar limpiar o formatear fechas si existe columna de tiempo/nombre de archivo
-    return df
+    try:
+      # on_bad_lines='skip' hace que Pandas ignore cualquier fila mal estructurada en el CSV
+      df = pd.read_csv(path, on_bad_lines='skip')
+      return df
+    except Exception as e:
+      st.error(f"Error al leer el CSV: {e}")
+      return pd.DataFrame()
   return pd.DataFrame()
 
 
